@@ -14,15 +14,17 @@ def write_csv(fileName,data):
 
 # input is imgStr 10*10 np.array
 def SVM_load():
-    file_path = 'dataset/data.xlsx'
+    file_path = 'GasArrayStm32V1_1/dataset/data.csv'
     sheet_name = 'raw data'
     C = 10000  # SVM regularization parameter, 1;
     gamma = 0.065 # 0.7
     ####################################################
 
-    gas = pd.read_excel(file_path, sheet_name=sheet_name)
-    x = gas.iloc[:, 4:104].values
-    y = np.ravel(gas.iloc[:, 1].values)
+    # gas = pd.read_excel(file_path, sheet_name=sheet_name)
+    data = np.genfromtxt(file_path, delimiter=',') # delimiter=','
+    x = data[1:, 4:104]
+    y = np.ravel(data[1:, 1])
+    print(x,y)
     # x = StandardScaler().fit_transform(x)
     clf = svm.SVC(kernel='rbf', gamma=gamma, C=C, decision_function_shape='ovo')
     models = clf.fit(x, y)
@@ -35,10 +37,10 @@ def SVM_pre(models, gas_img):
 
 def CNN_load(dataset=True):
     if dataset == True:
-        file_path = 'dataset/data.xlsx'
+        file_path = 'dataset/data.csv'
         sheet_name = 'raw data'
-        gas = pd.read_excel(file_path, sheet_name=sheet_name)
-        y = np.ravel(gas.iloc[:, 1].values)
+        data = np.genfromtxt(file_path, delimiter=',') # delimiter=','
+        y = np.ravel(data[1:, 1])
         target = 50
         target_num = y[-1] + 1
         model_path = "dataset/model20211111_104758.pth"
